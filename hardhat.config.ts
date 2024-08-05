@@ -2,6 +2,7 @@ import { NamedAccounts } from './data/NamedAccounts';
 import { DeploymentNetwork } from './utils/Constants';
 import '@nomicfoundation/hardhat-toolbox';
 import 'hardhat-deploy';
+import * as tenderly from '@tenderly/hardhat-tenderly';
 import 'hardhat-deploy-ethers';
 import 'zksync-ethers';
 import '@matterlabs/hardhat-zksync-solc';
@@ -12,6 +13,8 @@ import 'dotenv/config';
 import 'hardhat-contract-sizer';
 import { HardhatUserConfig } from 'hardhat/config';
 import { MochaOptions } from 'mocha';
+
+tenderly.setup({ automaticVerifications: true });
 
 interface EnvOptions {
   ETHEREUM_PROVIDER_URL?: string;
@@ -42,6 +45,8 @@ interface EnvOptions {
   POLYGON_AMOY_PROVIDER_URL?: string;
   SCROLL_SEPOLIA_PROVIDER_URL?: string;
   LINEA_GOERLI_PROVIDER_URL?: string;
+  ATTEST_TESTNET_URL?: string;
+  ATTEST_MAINNET_URL?: string;
   PROFILE?: boolean;
 }
 
@@ -74,6 +79,8 @@ const {
   POLYGON_ETHERSCAN_API_KEY = '',
   SCROLL_SEPOLIA_PROVIDER_URL = '',
   LINEA_GOERLI_PROVIDER_URL = '',
+  ATTEST_TESTNET_URL = '',
+  ATTEST_MAINNET_URL = '',
   PROFILE: isProfiling
 }: EnvOptions = process.env as any as EnvOptions;
 
@@ -97,6 +104,10 @@ const mochaOptions = (): MochaOptions => {
 };
 
 const config: HardhatUserConfig = {
+  tenderly: {
+    project: 'attest-chain-testnet',
+    username: 'envoy1084'
+  },
   networks: {
     [DeploymentNetwork.Hardhat]: {
       accounts: {
@@ -277,6 +288,19 @@ const config: HardhatUserConfig = {
       verify: {
         etherscan: { apiKey: LINEA_ETHERSCAN_API_KEY }
       }
+    },
+    [DeploymentNetwork.AttestTestnet]: {
+      chainId: 8453,
+      url: ATTEST_TESTNET_URL,
+      live: false,
+      saveDeployments: true,
+      verifyURL: `${ATTEST_TESTNET_URL}/verify/etherscan`
+    },
+    [DeploymentNetwork.AttestMainnet]: {
+      chainId: 13370,
+      url: ATTEST_MAINNET_URL,
+      saveDeployments: true,
+      verifyURL: `${ATTEST_MAINNET_URL}/verify/etherscan`
     }
   },
 

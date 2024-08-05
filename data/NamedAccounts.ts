@@ -29,6 +29,8 @@ export const NamedAccounts = {
     [DeploymentNetwork.PolygonAmoy]: deployer,
     [DeploymentNetwork.ScrollSepolia]: deployer,
     [DeploymentNetwork.LineaGoerli]: deployer,
+    [DeploymentNetwork.AttestTestnet]: deployer,
+    [DeploymentNetwork.AttestMainnet]: deployer,
     [DeploymentNetwork.Hardhat]: 0
   }
 };
